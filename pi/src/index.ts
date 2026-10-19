@@ -20,6 +20,23 @@ import { defineTool, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { applyPrompt, modelRefOf, preflight, runCommand } from "./core.ts";
 import { seedBuiltinPacks } from "./packs.ts";
 
+/** 收集预检需要的宿主侧事实：扩展注册的 MCP + 真实工具名（mcp.json 的只能从工具名看出来） */
+function collectEnv(pi: ExtensionAPI, cwd: string | undefined) {
+	let mcpServers: string[] = [];
+	let toolNames: string[] = [];
+	try {
+		mcpServers = (pi.getMcpServers?.() ?? []).map((s: { name: string }) => s.name);
+	} catch {
+		/* 宿主没有 MCP 能力时忽略 */
+	}
+	try {
+		toolNames = (pi.getAllTools?.() ?? []).map((t: { name: string }) => t.name);
+	} catch {
+		/* 工具目录尚不可用时忽略 */
+	}
+	return { cwd, mcpServers, toolNames };
+}
+
 export default function dshPurgePi(pi: ExtensionAPI) {
 	// 包安装（pi install <repo>）不会执行 install.mjs，这里补一次内置包，只补缺不覆盖
 	seedBuiltinPacks();
@@ -34,14 +51,8 @@ export default function dshPurgePi(pi: ExtensionAPI) {
 			description:
 				"检查本机是否具备开工条件：LAB 开关、FOFA_KEY / VPS 等环境变量、nmap/fscan/gogo/suo5/chisel/frpc 等二进制、提示词包与红队技能、本会话 MCP。只做事实收集，不联网、不回显密钥。",
 			parameters: Type.Object({}),
-			async execute() {
-				let mcpServers: string[] = [];
-				try {
-					mcpServers = (pi.getMcpServers?.() ?? []).map((s: { name: string }) => s.name);
-				} catch {
-					/* 宿主没有 MCP 能力时忽略 */
-				}
-				const result = preflight(mcpServers);
+			async execute(_toolCallId, _params, _signal, _onUpdate, ctx) {
+				const result = preflight(collectEnv(pi, ctx?.cwd));
 				return {
 					content: [{ type: "text", text: result.text }],
 					details: result.report,
@@ -53,14 +64,8 @@ export default function dshPurgePi(pi: ExtensionAPI) {
 	pi.registerCommand("purge", {
 		description: "pi-purge：提示词包 / 模型路由 / 注入姿态 / 预检",
 		handler: async (args, ctx) => {
-			let mcpServers: string[] = [];
 			if (args.trim().toLowerCase() === "doctor") {
-				try {
-					mcpServers = (pi.getMcpServers?.() ?? []).map((s: { name: string }) => s.name);
-				} catch {
-					/* ignore */
-				}
-				ctx.ui.notify(preflight(mcpServers).text, "info");
+				ctx.ui.notify(preflight(collectEnv(pi, ctx.cwd)).text, "info");
 				return;
 			}
 			const result = runCommand(args, modelRefOf(ctx));

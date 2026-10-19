@@ -178,9 +178,13 @@ try {
 	ok("补完落盘", existsSync(join(agent2, "purge", "packs", "zh-default.md")));
 	ok("重复调用不覆盖", packsMod.seedBuiltinPacks().length === 0);
 
-	const pf = core.preflight([]);
+	const pf = core.preflight({ cwd: "/tmp/ws", mcpServers: [], toolNames: ["mcp__seep", "read"] });
 	ok("preflight 返回结构化 checks", pf.report.checks.length >= 5);
 	ok("preflight 文本可读", pf.text.includes("purge 预检"));
+	ok("preflight 用传入的 cwd 而不是 process.cwd()", pf.text.includes("cwd=/tmp/ws"), pf.text.split("\n")[0]);
+	ok("preflight 能看到 mcp__ 工具（mcp.json 才算挂载）", pf.report.checks.find((c) => c.id === "mcp")?.ok === true);
+	ok("preflight 技能从包内也能认出来", pf.report.checks.find((c) => c.id === "skills")?.ok === true);
+	ok("建议按链路聚合，不逐条刷屏", pf.text.includes("红队链缺") && !pf.text.includes("红队链缺 nmap，"));
 	ok("preflight 不回显密钥明文", !(process.env.FOFA_KEY && pf.text.includes(process.env.FOFA_KEY)));
 } finally {
 	rmSync(home2, { recursive: true, force: true });

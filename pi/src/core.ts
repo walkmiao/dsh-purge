@@ -10,7 +10,7 @@
 
 import { PACKS_DIR, type PurgeState, getPack, labModeOn, listPacks, loadState, matchModel, resolvePack, saveState } from "./packs.ts";
 import { CAPABILITY_SECTION, capabilityProtocolText } from "./protocol.ts";
-import { renderPreflight, runPreflight, type PreflightReport } from "./preflight.ts";
+import { renderPreflight, runPreflight, type PreflightOptions, type PreflightReport } from "./preflight.ts";
 
 export const PACK_SECTION = "purge_pack";
 
@@ -171,7 +171,7 @@ export interface PreflightResult {
 	report: PreflightReport;
 }
 
-export function preflight(mcpServers: string[] = []): PreflightResult {
-	const report = runPreflight({ cwd: process.cwd(), mcpServers });
+export function preflight(opts: PreflightOptions = {}): PreflightResult {
+	const report = runPreflight({ ...opts, cwd: opts.cwd ?? process.cwd() });
 	return { text: renderPreflight(report), report };
 }
