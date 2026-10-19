@@ -46,6 +46,7 @@
 - [Sponsor](#sponsor)
 - [Ad slots](#ad)
 - [What this is](#what-this-is)
+- [pi agent support](#pi-agent-support)
 - [Attribution required](#attribution-required)
 - [Unauthorized commercial use](#unauthorized-commercial-use)
 - [Supported hosts](#supported-hosts)
@@ -111,6 +112,22 @@ It only touches the official `@deepseek-ai` packages and local config on the use
 ---
 
 ## Non-profit public project. Commercial sale, paid resale, and profit from illegal or gray-market activity are forbidden. For technical reference only.
+
+## pi agent support
+
+The same capability set runs on [pi](https://pi.dev) **without patching the host** — pi exposes system-prompt
+injection as a first-class extension point, so this layer is ~1k lines instead of 38k.
+
+```bash
+node pi/bin/build.mjs          # build prompt packs + 23 skills
+node pi/bin/install.mjs install
+```
+
+Then restart the pi session: `/purge` for status, `/purge doctor` for a local capability check,
+`/purge use <pack>` to switch persona packs. The model also gets a `purge_preflight` tool.
+See [`pi/README.md`](pi/README.md) and [`docs/PI-SUPPORT.md`](docs/PI-SUPPORT.md) for the mapping table.
+
+---
 
 ## Attribution required
 

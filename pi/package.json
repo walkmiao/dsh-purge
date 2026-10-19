@@ -1,0 +1,21 @@
+{
+  "name": "dsh-purge-pi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "dsh-purge 的 pi agent 移植层：提示词包 / 模型路由 / 红队技能与角色 / 本机预检。只是仓库内的工作区，安装入口在仓库根的 package.json → pi 字段，或 node pi/bin/install.mjs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node bin/build.mjs",
+    "install-pi": "node bin/build.mjs && node bin/install.mjs install",
+    "test": "node test/run.mjs"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+name: pi
+
+on:
+  push:
+    paths:
+      - "pi/**"
+      - "skills/redteam/**"
+      - "lib/default-prompt-inject.*.md"
+      - "package.json"
+      - ".github/workflows/pi.yml"
+  pull_request:
+    paths:
+      - "pi/**"
+      - "skills/redteam/**"
+      - "lib/default-prompt-inject.*.md"
+      - "package.json"
+      - ".github/workflows/pi.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # 自测直接 import .ts（Node 22.18+ 原生剥类型）；扩展本身由 pi 的 jiti 加载，不受此限
+    strategy:
+      matrix:
+        node: [22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Build pi assets
+        run: node pi/bin/build.mjs
+
+      - name: Generated assets match the repo
+        run: node pi/bin/build.mjs --check
+
+      - name: Self test
+        run: node pi/test/run.mjs
+
+      - name: Syntax check entrypoints
+        run: node --check pi/bin/build.mjs && node --check pi/bin/install.mjs && node --check pi/test/run.mjs

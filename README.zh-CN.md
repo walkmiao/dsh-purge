@@ -46,6 +46,7 @@
 - [赞助](#sponsor)
 - [广告位](#ad)
 - [介绍](#介绍)
+- [pi agent 支持](#pi-agent-支持)
 - [署名要求](#署名要求)
 - [违规商用公示](#违规商用公示)
 - [适配范围](#适配范围)
@@ -114,6 +115,25 @@ Harness 不只是把问题交给模型。它还会在运行时改提示词、审
 ---
 
 ## 📌 非盈利公益项目，严禁任何主体用于商业售卖、付费倒卖或黑灰产牟利，仅供技术参考。
+
+## pi agent 支持
+
+同一套能力也接到了 [pi](https://pi.dev) 上，**不打任何宿主补丁**——pi 把系统提示词注入做成了官方扩展点，
+所以这一层一千多行就够（dsh 侧的三万八行大部分是在跟宿主耦合搏斗）。
+
+```bash
+node pi/bin/build.mjs          # 生成提示词包 + 23 个技能
+node pi/bin/install.mjs install
+```
+
+装完重启 pi 会话：`/purge` 看状态、`/purge doctor` 做本机预检、`/purge use <包>` 换人格包。
+模型侧另有 `purge_preflight` 工具。详见 [`pi/README.md`](pi/README.md) 与
+[`docs/PI-SUPPORT.md`](docs/PI-SUPPORT.md)（能力对照表 + 三个必须知道的差异）。
+
+可用能力：提示词包按模型路由、section/lead 两种注入姿态、能力选用协议段、
+23 个红队技能（转 pi 规范，`role` 不丢）、五个红队角色（`redteam-recon/assess/vuln-scan/exploit/internal`，叶子节点）。
+
+---
 
 ## 署名要求
 

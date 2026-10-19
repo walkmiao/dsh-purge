@@ -32,11 +32,15 @@
     "README.md",
     "README.zh-CN.md",
     "README.en.md",
-    "LICENSE"
+    "LICENSE",
+    "pi"
   ],
   "scripts": {
     "embed-prompt": "node scripts/embed-default-prompt.mjs",
-    "build:client": "node scripts/build-client.mjs"
+    "build:client": "node scripts/build-client.mjs",
+    "pi:build": "node pi/bin/build.mjs",
+    "pi:install": "node pi/bin/install.mjs install",
+    "pi:test": "node pi/test/run.mjs"
   },
   "license": "MIT",
   "keywords": [
@@ -52,7 +56,10 @@
     "instructions",
     "rules",
     "prompt-eval",
-    "agent"
+    "agent",
+    "pi-package",
+    "pi-extension",
+    "pi-agent"
   ],
   "repository": {
     "type": "git",
@@ -92,5 +99,18 @@
   "engines": {
     "node": ">=18"
   },
-  "dshTarget": "0.2.0-rc.2"
+  "dshTarget": "0.2.0-rc.2",
+  "pi": {
+    "extensions": [
+      "./pi/src/index.ts"
+    ],
+    "skills": [
+      "./pi/generated/skills"
+    ],
+    "subagents": {
+      "agents": [
+        "./pi/agents"
+      ]
+    }
+  }
 }

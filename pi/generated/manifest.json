@@ -1,0 +1,123 @@
+{
+  "packs": [
+    "zh-default",
+    "en-default"
+  ],
+  "skills": [
+    {
+      "name": "redteam-active-scan",
+      "role": "recon",
+      "bytes": 1136
+    },
+    {
+      "name": "redteam-asset-correlation",
+      "role": "recon",
+      "bytes": 199
+    },
+    {
+      "name": "redteam-browser-automation",
+      "role": "recon",
+      "bytes": 3307
+    },
+    {
+      "name": "redteam-chisel-tunnel",
+      "role": "internal",
+      "bytes": 3728
+    },
+    {
+      "name": "redteam-cn-proxy-pool",
+      "role": "vuln-scan",
+      "bytes": 3439
+    },
+    {
+      "name": "redteam-credential-attack",
+      "role": "exploit",
+      "bytes": 5338
+    },
+    {
+      "name": "redteam-dir-bruteforce",
+      "role": "vuln-scan",
+      "bytes": 4423
+    },
+    {
+      "name": "redteam-fofa-recon",
+      "role": "recon",
+      "bytes": 6319
+    },
+    {
+      "name": "redteam-frp-tunnel",
+      "role": "internal",
+      "bytes": 4053
+    },
+    {
+      "name": "redteam-fscan-intranet",
+      "role": "internal",
+      "bytes": 5958
+    },
+    {
+      "name": "redteam-gogo-intranet",
+      "role": "internal",
+      "bytes": 6556
+    },
+    {
+      "name": "redteam-kimi-webbridge",
+      "role": "recon",
+      "bytes": 3937
+    },
+    {
+      "name": "redteam-lateral-movement",
+      "role": "internal",
+      "bytes": 5189
+    },
+    {
+      "name": "redteam-nuclei-scan",
+      "role": "vuln-scan",
+      "bytes": 3785
+    },
+    {
+      "name": "redteam-passive-recon",
+      "role": "recon",
+      "bytes": 325
+    },
+    {
+      "name": "redteam-recon-pipeline",
+      "role": "recon",
+      "bytes": 3890
+    },
+    {
+      "name": "redteam-redteam-setup",
+      "role": "",
+      "bytes": 3531
+    },
+    {
+      "name": "redteam-shell-handler",
+      "role": "exploit",
+      "bytes": 5420
+    },
+    {
+      "name": "redteam-suo5-tunnel",
+      "role": "internal",
+      "bytes": 2010
+    },
+    {
+      "name": "redteam-unauth-exploit",
+      "role": "exploit",
+      "bytes": 5649
+    },
+    {
+      "name": "redteam-vps-reverse-shell",
+      "role": "exploit",
+      "bytes": 6088
+    },
+    {
+      "name": "redteam-web-fingerprint",
+      "role": "recon",
+      "bytes": 501
+    },
+    {
+      "name": "redteam-webshell-toolkit",
+      "role": "exploit",
+      "bytes": 3613
+    }
+  ]
+}
