@@ -171,6 +171,13 @@ try {
 
 	ok("未知子命令给提示而不是崩", core.runCommand("bogus", ref("a", "b")).message.includes("子命令"));
 
+	// 内置包兜底：包安装（pi install）不会跑 install.mjs，扩展启动时自己补
+	const packsMod = await import(pathToFileURL(join(PI, "src", "packs.ts")).href + "?t=" + Date.now());
+	const seeded = packsMod.seedBuiltinPacks();
+	ok("seedBuiltinPacks 补出内置包", seeded.includes("zh-default.md") && seeded.includes("en-default.md"), seeded.join(","));
+	ok("补完落盘", existsSync(join(agent2, "purge", "packs", "zh-default.md")));
+	ok("重复调用不覆盖", packsMod.seedBuiltinPacks().length === 0);
+
 	const pf = core.preflight([]);
 	ok("preflight 返回结构化 checks", pf.report.checks.length >= 5);
 	ok("preflight 文本可读", pf.text.includes("purge 预检"));

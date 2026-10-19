@@ -6,9 +6,10 @@
  * 整段 systemPrompt，宿主会重排并记录 transcript delta。
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const AGENT_DIR = join(homedir(), ".pi", "agent");
 export const PURGE_DIR = join(AGENT_DIR, "purge");
@@ -152,4 +153,40 @@ export function resolvePack(state: PurgeState, provider: string, model: string):
 	if (state.onlyInLabMode && !labModeOn()) return undefined;
 	const pack = getPack(matchModel(state, provider, model));
 	return pack && pack.body ? pack : undefined;
+}
+
+/**
+ * 把包内自带的内置提示词包铺到用户目录（只补缺，不覆盖）。
+ *
+ * 为什么需要：`pi install <repo>` 只按 package.json 的 pi 清单加载扩展，
+ * 不会执行 install.mjs，所以第一次启动时 ~/.pi/agent/purge/packs 是空的——
+ * 用户会看到「可用包 0 个」。这里从扩展自己所在位置反推 ../generated/packs 兜底。
+ *
+ * 用 install.mjs 装的那份布局里 ../generated 不存在，函数直接 no-op（那边已复制过）。
+ */
+export function seedBuiltinPacks(): string[] {
+	let src: string;
+	try {
+		src = fileURLToPath(new URL("../generated/packs", import.meta.url));
+	} catch {
+		return [];
+	}
+	if (!existsSync(src)) return [];
+
+	let files: string[] = [];
+	try {
+		files = readdirSync(src).filter((f) => f.endsWith(".md"));
+	} catch {
+		return [];
+	}
+	const missing = files.filter((f) => !existsSync(join(PACKS_DIR, f)));
+	if (missing.length === 0) return [];
+
+	try {
+		mkdirSync(PACKS_DIR, { recursive: true });
+		for (const f of missing) copyFileSync(join(src, f), join(PACKS_DIR, f));
+	} catch {
+		return [];
+	}
+	return missing;
 }

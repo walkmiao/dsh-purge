@@ -18,8 +18,12 @@
 import { Type } from "@earendil-works/pi-ai";
 import { defineTool, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { applyPrompt, modelRefOf, preflight, runCommand } from "./core.ts";
+import { seedBuiltinPacks } from "./packs.ts";
 
 export default function dshPurgePi(pi: ExtensionAPI) {
+	// 包安装（pi install <repo>）不会执行 install.mjs，这里补一次内置包，只补缺不覆盖
+	seedBuiltinPacks();
+
 	// 每次 agent 启动都重读状态，改包不用重启
 	pi.on("before_agent_start", async (event, ctx) => applyPrompt(event, modelRefOf(ctx)));
 
